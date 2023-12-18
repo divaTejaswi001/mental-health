@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calming Signup Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: lavender;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .styled-rectangle1:hover {
+            transform: scale(1.2);
+        }
+
+        .styled-rectangle2:hover {
+            transform: scale(1.2);
+        }
+
+        .styled-rectangle3:hover {
+            transform: scale(1.2);
+        }
+
+        h2 {
+            position: relative;
+            left: 60px;
+            color: #512DA8;
+        }
+
+
+        .shapes-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .bird {
+            width: 50px;
+            height: 50px;
+
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .bird1 {
+            top: 20%;
+            left: 20%;
+            animation: moveBird 2s infinite alternate;
+            background-color: pink;
+        }
+
+        .bird2 {
+            top: 85%;
+            left: 80%;
+            animation: moveBird 5s infinite alternate;
+            background-color: #b6e6bd;
+        }
+
+        .bird3 {
+            top: 15%;
+            left: 80%;
+            animation: moveBird 3s infinite alternate;
+            background-color: #b19cd9;
+        }
+
+        .bird4 {
+            top: 75%;
+            left: 60%;
+            animation: moveBird 4s infinite alternate;
+            background-color: pink;
+        }
+
+        .bird5 {
+
+            top: 10%;
+            left: 50%;
+            animation: moveBird 2s infinite alternate;
+            background-color: yellowgreen;
+        }
+
+        .bird6 {
+
+            top: 80%;
+            left: 10%;
+            animation: moveBird 3s infinite alternate;
+            background-color: #b19cd9;
+        }
+
+        .ball {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            position: absolute;
+            opacity: 1;
+            pointer-events: none;
+        }
+
+        .ball1 {
+            top: 25%;
+            left: 40%;
+            background-color: #b19cd9;
+            animation: moveBall 5s infinite alternate;
+        }
+
+        .ball2 {
+            top: 75%;
+            left: 65%;
+            background-color: #f0b3ff;
+            animation: moveBall 4s infinite alternate;
+        }
+
+        .ball3 {
+            top: 20%;
+            left: 20%;
+            background-color: #f0b3ff;
+            animation: moveBall 3s infinite alternate;
+        }
+
+
+
+        .ball4 {
+            top: 30%;
+            left: 75%;
+            background-color: #f2b5d4;
+            animation: moveBall 2s infinite alternate;
+        }
+
+        .ball5 {
+            top: 90%;
+            left: 40%;
+            background-color: #d6a2c4;
+            animation: moveBall 4s infinite alternate;
+        }
+
+        .ball6 {
+            top: 20%;
+            left: 10%;
+            background-color: #b6e6bd;
+            animation: moveBall 5s infinite alternate;
+        }
+
+        .ball7 {
+            top: 20%;
+            left: 80%;
+            background-color: #f0b3ff;
+            animation: moveBall 5s infinite alternate;
+        }
+
+        .ball8 {
+            top: 10%;
+            left: 80%;
+            background-color: yellowgreen;
+            animation: moveBall 5s infinite alternate;
+        }
+
+        .ball9 {
+            top: 90%;
+            left: 20%;
+            background-color: #f0b3ff;
+            animation: moveBall 2s infinite alternate;
+        }
+
+        .ball10 {
+            top: 70%;
+            left: 30%;
+            background-color: yellowgreen;
+            animation: moveBall 6s infinite alternate;
+        }
+
+
+
+        .styled-rectangle1 {
+            width: 300px;
+            height: 200px;
+            background-color: #fff;
+            border: 15px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #3498db, #e74c3c);
+            border-image-slice: 1;
+            margin: 50px;
+
+        }
+
+        .styled-rectangle1 img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .styled-rectangle2 {
+            width: 300px;
+            height: 200px;
+            background-color: #fff;
+            border: 15px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #3498db, #e74c3c);
+            border-image-slice: 1;
+            margin: 50px;
+
+        }
+
+        .styled-rectangle2 img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .styled-rectangle3 {
+            width: 300px;
+            height: 200px;
+            background-color: #fff;
+            border: 15px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(to right, #3498db, #e74c3c);
+            border-image-slice: 1;
+            margin: 50px;
+
+
+        }
+
+        .styled-rectangle3 img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes moveBird {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50px);
+            }
+        }
+
+        @keyframes moveBall {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-30px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="shapes-container">
+        <div class="bird bird1"></div>
+        <div class="bird bird2"></div>
+        <div class="bird bird3"></div>
+        <div class="bird bird4"></div>
+        <div class="bird bird5"></div>
+        <div class="bird bird6"></div>
+
+
+        <div class="ball ball1"></div>
+        <div class="ball ball2"></div>
+        <div class="ball ball3"></div>
+        <div class="ball ball4"></div>
+        <div class="ball ball5"></div>
+        <div class="ball ball6"></div>
+        <div class="ball ball7"></div>
+        <div class="ball ball8"></div>
+        <div class="ball ball9"></div>
+        <div class="ball ball10"></div>
+
+
+    </div>
+    <div class="styled-rectangle1">
+        <a href="poptoshoot-instructions.html">
+            <img src="POPTOSCHOOT.gif" alt="Image"></a>
+        <h2>Pop to Shoot</h2>
+
+
+    </div>
+    <div class="styled-rectangle2">
+        <a href="ruby-instruction.html"><img id="try" src="MATCHMANIA.gif" alt="Image"></a>
+
+        <h2>Match Mania</h2>
+    </div>
+    <div class="styled-rectangle3">
+        <a href="cacththeballinst.html">
+            <img src="catch the ball.gif" alt="Image"></a>
+        <h2>Catch the ball</h2>
+    </div>
+
+
+</body>
+
+</html>

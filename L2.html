@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>instruction page</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: lavenderblush;
+            font-family: Arial, sans-serif;
+        }
+
+        .start-container {
+            width: 300px;
+            height: 300px;
+            margin: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            background-color: lavender;
+            cursor: pointer;
+            border-radius: 50%;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            transition: background-color 0.3s ease-in-out;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .start-container:hover {
+            background-color: rgb(220, 150, 169);
+        }
+
+        .start-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .start-button {
+            padding: 10px 20px;
+            font-size: 20px;
+            background-color: white;
+            color: #090909;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .instruction-text {
+            background-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="start-container">
+        <h1>Welcome to Catch-The-Match game !</h1>
+
+        <button class="start-button" onclick="startGame()">Start Game</button>
+    </div>
+    <div class="instructions-container">
+        <div class="instruction-text">
+            <h1>
+                <pretty> Level -2 </pretty>
+            </h1>
+
+            <p> * Instructions are Randomly displayed :
+                <pretty> </pretty>-if instruction is to catch you need to catch the ball,else not
+            </p>
+            <p> * Score will decrement if you fail to follow up the instruction</p>
+
+            <p> * Game will end after 60 seconds</p>
+        </div>
+
+        <script>
+            function startGame() {
+                // Redirect to the game page when the "Start Game" button is clicked
+                window.location.href = "Level2.html";
+            }
+        </script>
+</body>
+
+</html>

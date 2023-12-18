@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Match Mania</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: lavenderblush;
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100vh;
+            background-color: lavender;
+        }
+
+        #message-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #message {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            /* To place hint and timer at the top */
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 10px;
+        }
+
+        .square {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #000;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .color-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .color {
+            font-size: 14px;
+            font-family: "Arial", sans-serif;
+            /* Change the font family here */
+        }
+
+        #hint,
+        #time {
+            margin-bottom: 10px;
+        }
+
+        .box-content {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="hint">Click on: <span id="hintColor"></span></div>
+    <div id="time">Time Left: <span id="timeLeft">120</span> seconds</div>
+    <div class="grid-container" id="gameBoard"></div>
+    <div>
+        <p>Score: <span id="score">0</span></p>
+    </div>
+    <script>
+        const initialColorNames = ["Red", "Orange", "Green", "Blue", "Purple", "Pink"];
+        const initialBoxColors = ["#FFCCCC", "#FFD699", "#CCFFCC", "#CCE5FF", "#E5CCFF", "#FFCCFF", "#FF99CC"];
+
+        const poolSize = 30; // Maximum number of squares in the pool
+
+        let colorNames = initialColorNames.slice();
+        let boxColors = initialBoxColors.slice();
+
+        let score = 0;
+        let timeLeft = 120;
+        let boxesToAdd = 3;
+        let colorsToAdd = 1;
+        let squaresPool = [];
+
+        function shuffleColors(colors) {
+            for (let i = colors.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [colors[i], colors[j]] = [colors[j], colors[i]];
+            }
+        }
+
+        function createSquare(color, name) {
+            const square = document.createElement("div");
+            square.classList.add("square");
+            square.style.backgroundColor = color;
+
+            const colorIndicator = document.createElement("div");
+            colorIndicator.classList.add("color-indicator");
+            colorIndicator.style.backgroundColor = color;
+
+            const colorElement = document.createElement("div");
+            colorElement.classList.add("color");
+            colorElement.textContent = name;
+
+            square.appendChild(colorIndicator);
+            square.appendChild(colorElement);
+
+            square.setAttribute("data-color-name", name);
+            square.addEventListener("click", onSquareClick);
+            return square;
+        }
+
+        function createSquares() {
+            const gameBoard = document.getElementById("gameBoard");
+            gameBoard.innerHTML = "";
+
+            // Shuffle the box colors and color names independently
+            const shuffledBoxColors = boxColors.slice();
+            shuffleColors(shuffledBoxColors);
+
+            const shuffledColorNames = colorNames.slice();
+            shuffleColors(shuffledColorNames);
+
+            const totalBoxes = 6 + boxesToAdd;
+
+            for (let i = 0; i < totalBoxes; i++) {
+                let square;
+
+                if (i < squaresPool.length) {
+                    // Reuse squares from the pool
+                    square = squaresPool[i];
+                    square.style.backgroundColor = shuffledBoxColors[i % shuffledBoxColors.length];
+                    square.querySelector(".color").textContent = shuffledColorNames[i % shuffledColorNames.length];
+                    square.setAttribute("data-color-name", shuffledColorNames[i % shuffledColorNames.length]);
+                } else {
+                    // Create new squares and add them to the pool
+                    square = createSquare(shuffledBoxColors[i % shuffledBoxColors.length], shuffledColorNames[i % shuffledColorNames.length]);
+                    squaresPool.push(square);
+                }
+
+                gameBoard.appendChild(square);
+            }
+
+            updateHint();
+        }
+
+        function randomizeBoxSize() {
+            const squares = document.querySelectorAll(".square");
+            squares.forEach((square) => {
+                const randomSize = Math.floor(Math.random() * 40) + 60; // Random size between 60 and 99 pixels
+                square.style.width = randomSize + "px";
+                square.style.height = randomSize + "px";
+            });
+        }
+
+        function onSquareClick(event) {
+            const clickedColorName = event.target.getAttribute("data-color-name");
+            const hintColorName = document.getElementById("hintColor").textContent;
+
+            if (clickedColorName === hintColorName) {
+                score++;
+                document.getElementById("score").textContent = score;
+
+                updateScoreAndBoxesToAdd();
+                createSquares();
+                updateHint();
+            } else {
+                // Penalty for clicking on the wrong square
+                if (score >= 2) {
+                    score -= 2;
+                } else {
+                    score = 0;
+                }
+
+                document.getElementById("score").textContent = score;
+                updateHint();
+            }
+
+            if (score >= 30) {
+                randomizeBoxSize();
+            }
+        }
+
+        function updateHint() {
+            document.getElementById("hintColor").textContent = colorNames[Math.floor(Math.random() * colorNames.length)];
+        }
+
+        function updateTime() {
+            const timerElement = document.getElementById("timeLeft");
+            timerElement.textContent = timeLeft;
+
+            if (timeLeft > 0) {
+                setTimeout(function () {
+                    timeLeft--;
+                    updateTime();
+                }, 1000);
+            } else {
+                alert(`Game Over! Your score: ${score}`);
+                endGame();
+                if (confirm("Do you want to play again?")) {
+                    window.location.reload(); // Restart the game by refreshing the page
+                }
+            }
+        }
+
+        function endGame() {
+            score = 0;
+            timeLeft = 120;
+            boxesToAdd = 3;
+            colorsToAdd = 1;
+            squaresPool = [];
+
+            const gameBoard = document.getElementById("gameBoard");
+            gameBoard.innerHTML = "";
+
+            createSquares();
+            document.getElementById("score").textContent = score;
+        }
+
+        window.onload = function () {
+            // Initialize the squares pool with initial squares
+            for (let i = 0; i < poolSize; i++) {
+                squaresPool.push(createSquare("", ""));
+            }
+
+            createSquares();
+            updateTime();
+        }
+
+        function updateScoreAndBoxesToAdd() {
+            if (score >= 30) {
+                colorsToAdd = 2; // Increase the number of colors to add to 2 after reaching a score of 30.
+            }
+
+
+            if (score >= 20) {
+                boxesToAdd = 6; // Increase the number of boxes to add to 6 after reaching a score of 20.
+            } else if (score >= 10) {
+                boxesToAdd = 3;
+                // Keep the default number of boxes to add as 3 for scores between 10 and 20.
+            }
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Containers with Diagonal Links</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: lavenderblush;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container-wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .container {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #080808;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 18px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .diagonal-link {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: skew(-30deg);
+            top: 0;
+            left: 0;
+        }
+
+        .diagonal-link a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            transform: skew(30deg);
+            text-align: center;
+            text-decoration: none;
+            color: #000;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container:hover {
+            transform: rotate(-5deg);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .diagonal-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            z-index: 2;
+        }
+
+        .cursive-paragraph {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 24px;
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeIn 2s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.5);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-wrapper">
+        <div class="container" style="background-color: #FFC0CB;">
+            <div class="diagonal-link"><a href="rubyl1inst.html" target="_blank"></a></div>
+            <div class="diagonal-text">Beginner</div>
+        </div>
+        <div class="container" style="background-color: #FFD700;"></div>
+        <div class="container" style="background-color: #00BFFF;"></div>
+        <div class="container" style="background-color: #98FB98;"></div>
+        <div class="container" style="background-color: #FFA500;">
+            <div class="diagonal-link"><a href="" target="_blank"></a></div>
+            <div class="diagonal-text"></div>
+        </div>
+        <div class="container" style="background-color: #e3bbd0;"></div>
+        <div class="container" style="background-color: #88c488;"></div>
+        <div class="container" style="background-color: #c08a76;"></div>
+        <div class="container" style="background-color: #9ddfdf;">
+            <div class="diagonal-link"><a href="rubyl3inst.html" target="_blank"></a></div>
+            <div class="diagonal-text">Advanced</div>
+        </div>
+    </div>
+
+    <p class="cursive-paragraph"
+        style="font-family: 'Brush Script MT', cursive; font-size: 50px; text-align: center; margin-top: 30px; opacity: 0; animation: fadeIn 2s ease-in-out forwards;">
+        Match-Mania--------<pretty> </pretty>Rooby-Dooby!
+    </p>
+</body>
+
+</html>

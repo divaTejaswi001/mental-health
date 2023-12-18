@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            
+        }
+           header {
+            background-color: #219C90;
+            padding: 15px;
+            text-align: center;
+            color: #eeece6;
+            font-family: 'Pacifico', cursive;
+           }
+
+
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #78D6C6;
+            padding: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            padding: 10px;
+            transition: background-color 0.3s, transform 0.2s ease-out;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background-color: #78D6C6;
+            transform: scale(1.3);
+            color: #016A70;
+        }
+
+        .logout-container {
+          width:300px;
+          height:100px;
+          padding:30px;
+          padding-bottom: 40px;
+          border-style: solid;
+          border-radius: 10px;
+          border-width: 4px;
+          margin-left: 450px;
+          margin-top: 70px;
+          border-color:#016A70 ;
+          box-shadow: #016A70;
+        
+        }
+
+       
+        p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .logout-button {
+            background-color: #016A70;
+            color: #fff;
+            padding: 10px 20px;
+            margin-left: 100px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .logout-button:hover {
+            background-color: #ff1a1a;
+             transform: scale(1.3);
+        }
+       
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>चित्त
+            : Your Path to Inner Harmony. </h1>
+    </header>
+   
+    <nav>
+        <a href="landing.html">Home</a>
+        <a href="emergency.html">Emergency Contact</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="logout.html">Logout</a>
+    </nav>
+    <br>
+    <br>
+    <div class="logout-container">
+      
+        <p>Are you sure you want to log out?</p>
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+
+</body>
+
+</html>

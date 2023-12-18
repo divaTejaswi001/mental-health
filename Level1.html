@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Catch the Ball Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f79eff, #68cde3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .ball {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            position: absolute;
+            animation: bounce 2s infinite;
+            background: radial-gradient(circle, #df5c5ad6, #65ceda, #fbfffd);
+            background-size: 600% 600%;
+            animation: gradientChange 2s infinite;
+        }
+
+        .paddle {
+            position: absolute;
+            width: 100px;
+            height: 20px;
+            background-color: #020202;
+            bottom: 20px;
+            cursor: none;
+            border-radius: 10px;
+        }
+
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #333;
+            padding: 8px 14px;
+            border-radius: 25px;
+            top: 20px;
+            left: 20px;
+            background-color: #f5c2f3;
+
+        }
+
+        #timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #333;
+            padding: 8px 14px;
+            border-radius: 25px;
+            top: 20px;
+            right: 20px;
+            background-color: rgb(170, 199, 225);
+
+        }
+
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: bold;
+            color: #cc3737;
+            display: none;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="paddle"></div>
+    <div id="score">Score: 0</div>
+    <div id="timer">Time: 60</div>
+    <div id="game-over">Game Over</div>
+
+    <script>
+        const balls = document.querySelectorAll('.ball');
+        const paddle = document.querySelector('.paddle');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const gameOverDisplay = document.getElementById('game-over');
+
+        let score = 0;
+        let ballSpeedX = [5, -5, 3];
+        let ballSpeedY = [5, -4, -5];
+        let isGameOver = false;
+        let remainingTime = 60;
+        let timerInterval;
+        let ballCollisionOccurred = false;
+
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        function setRandomPosition(ball) {
+            const x = Math.random() * (windowWidth - 30);
+            const y = Math.random() * (windowHeight - 30);
+            ball.style.left = `${x}px`;
+            ball.style.top = `${y}px`;
+        }
+
+        function updateBallPosition() {
+            if (!isGameOver) {
+                ballCollisionOccurred = false; // Reset the collision flag
+
+                balls.forEach((ball, index) => {
+                    let currentX = parseInt(ball.style.left);
+                    let currentY = parseInt(ball.style.top);
+
+                    // Move the ball in its current direction
+                    currentX += ballSpeedX[index];
+                    currentY += ballSpeedY[index];
+
+                    // Check for collisions with the window edges
+                    if (currentX <= 0 || currentX >= windowWidth - 30) {
+                        ballSpeedX[index] = -ballSpeedX[index]; // Reverse X direction
+                    }
+
+                    if (currentY <= 0 || currentY >= windowHeight - 30) {
+                        ballSpeedY[index] = -ballSpeedY[index]; // Reverse Y direction
+                    }
+
+                    ball.style.left = `${currentX}px`;
+                    ball.style.top = `${currentY}px`;
+
+                    // Check for collision with the paddle
+                    if (
+                        currentX + 30 >= parseInt(paddle.style.left) &&
+                        currentX <= parseInt(paddle.style.left) + 100 &&
+                        currentY + 30 >= windowHeight - 40 &&
+                        !ballCollisionOccurred
+                    ) {
+                        ballSpeedY[index] = -ballSpeedY[index]; // Reverse Y direction
+                        score++;
+                        scoreDisplay.textContent = 'Score: ' + score;
+                        ballCollisionOccurred = true; // Set collision flag to true
+                    }
+
+                    // Check for collision with the ground
+                    if (currentY >= windowHeight - 30) {
+                        endGame();
+                        return; // End the game loop
+                    }
+                });
+
+                requestAnimationFrame(updateBallPosition);
+            }
+        }
+
+        function updateTime() {
+            remainingTime--;
+            timerDisplay.textContent = 'Time: ' + remainingTime;
+
+            if (remainingTime <= 0 || isGameOver) {
+                clearInterval(timerInterval); // Stop the timer
+                endGame();
+            }
+        }
+
+
+        function endGame() {
+            isGameOver = true;
+            balls.forEach(ball => ball.remove());
+            paddle.remove();
+            gameOverDisplay.style.display = 'block';
+        }
+
+        setRandomPosition(balls[0]);
+        setRandomPosition(balls[1]);
+        setRandomPosition(balls[2]);
+        updateBallPosition();
+        timerInterval = setInterval(updateTime, 1000);
+
+
+        function movePaddle(event) {
+            const x = event.clientX - 50; // Half of paddle width
+            paddle.style.left = `${x}px`;
+        }
+
+        document.addEventListener('mousemove', movePaddle);
+    </script>
+</body>
+
+</html>

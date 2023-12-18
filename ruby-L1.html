@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Color Switcher Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+
+            background-color: lavenderblush;
+        }
+
+        #game-container {
+
+
+            text-align: center;
+        }
+
+        #target-color {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            border: 2px solid black;
+        }
+
+        .color-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            color: black;
+            background-color: lavender;
+        }
+
+        #message {
+            font-size: 18px;
+            margin-top: 10px;
+            padding: 10px 50px;
+            background-color: rgb(254, 254, 254);
+        }
+
+        #start-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            color: black;
+            background-color: lavender;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-container">
+        <div id="target-color"></div>
+        <div id="color-btn-container">
+            <button class="color-btn">Red</button>
+            <button class="color-btn">Blue</button>
+            <button class="color-btn">Green</button>
+            <button class="color-btn">Yellow</button>
+            <button class="color-btn">Purple</button>
+            <button class="color-btn">Orange</button>
+        </div>
+        <div id="message"></div>
+        <p>Time left: <span id="time-left">60</span> seconds</p>
+        <p>Score: <span id="score">0</span></p>
+        <button id="start-btn">Start Game</button>
+    </div>
+
+    <script>
+        const targetColor = document.getElementById("target-color");
+        const colorButtons = document.querySelectorAll(".color-btn");
+        const colors = ["red", "blue", "green", "yellow", "purple", "orange"];
+        let targetColorValue;
+        let score = 0;
+        let timeLeft = 60;
+        let gameStarted = false;
+
+        function getRandomColor() {
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function setRandomTargetColor() {
+            targetColorValue = getRandomColor();
+            targetColor.style.backgroundColor = targetColorValue;
+        }
+
+        function checkColorMatch(e) {
+            if (!gameStarted) return;
+
+            const selectedColor = e.target.textContent.toLowerCase();
+            if (selectedColor === targetColorValue) {
+                score++;
+                document.getElementById("score").textContent = score;
+                showMessage("Congratulations! You matched the target color.", "success");
+                setRandomTargetColor();
+            } else {
+                showMessage("Try again! The target color is different.", "error");
+            }
+        }
+
+        function showMessage(message, messageType) {
+            const messageDiv = document.getElementById("message");
+            messageDiv.textContent = message;
+            messageDiv.style.color = messageType === "success" ? "green" : "red";
+        }
+
+        function startGame() {
+            if (!gameStarted) {
+                gameStarted = true;
+                score = 0;
+                document.getElementById("score").textContent = score;
+                timeLeft = 60;
+                document.getElementById("time-left").textContent = timeLeft;
+
+                const intervalId = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById("time-left").textContent = timeLeft;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(intervalId);
+                        gameStarted = false;
+                        colorButtons.forEach((button) => {
+                            button.removeEventListener("click", checkColorMatch);
+                        });
+                        showMessage("Game Over! Time's up.", "error");
+                    }
+                }, 1000);
+
+                colorButtons.forEach((button) => {
+                    button.addEventListener("click", checkColorMatch);
+                });
+
+                setRandomTargetColor();
+            }
+        }
+
+        document.getElementById("start-btn").addEventListener("click", startGame);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Falling Ball Catcher Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f79eff, #68cde3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #000;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: absolute;
+            left: 0;
+            top: 20;
+        }
+
+        #score {
+            background-color: rgb(221, 221, 250);
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+        }
+
+        #instruction {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            border-radius: 20%;
+            background-color: rgb(221, 221, 250);
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        <div id="score">Score: 0</div>
+        <font size="10">
+            <div id="instruction">Catch: <span id="target-color"></span>
+        </font>
+    </div>
+    </div>
+
+    <script>
+        alert("click on screen to start the game when u are")
+        const canvas = document.getElementById("game-canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const paddleWidth = 100;
+        const paddleHeight = 10;
+        let paddleX = (canvas.width - paddleWidth) / 2;
+
+        const ballRadius = 10;
+        const balls = [];
+
+        const specialBallRadius = 20;
+        let specialBallActive = false;
+        let specialBall = null;
+
+        const colors = ["red", "blue", "green", "yellow", "orange", "purple"];
+        let score = 0;
+        let ballSpeed = 8; // Initial ball speed
+        let maxBalls = 3; // Maximum number of balls initially
+
+        canvas.addEventListener("mousemove", (event) => {
+            const relativeX = event.clientX - canvas.offsetLeft;
+            if (relativeX > 0 && relativeX < canvas.width) {
+                paddleX = relativeX - paddleWidth / 2;
+            }
+        });
+
+        function getRandomColor() {
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function createFallingBall(color) {
+            const ball = {
+                x: Math.random() * canvas.width,
+                y: 0,
+                color: color,
+                speed: ballSpeed, // Use the current ball speed
+            };
+            balls.push(ball);
+        }
+
+        function createSpecialBall() {
+            specialBall = {
+                x: Math.random() * canvas.width,
+                y: 0,
+                color: "gold", // Special ball color
+                speed: ballSpeed * 1.5, // Faster speed
+            };
+            specialBallActive = true;
+        }
+
+        function drawPaddle() {
+            context.beginPath();
+            context.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+            context.fillStyle = "black";
+            context.fill();
+            context.closePath();
+        }
+
+        function drawBalls() {
+            for (let i = 0; i < balls.length; i++) {
+                const ball = balls[i];
+                context.beginPath();
+                context.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
+                context.fillStyle = ball.color;
+                context.fill();
+                context.closePath();
+
+                ball.y += ball.speed;
+
+                // Check if the ball is caught by the paddle
+                if (
+                    ball.y + ballRadius > canvas.height - paddleHeight &&
+                    ball.x > paddleX &&
+                    ball.x < paddleX + paddleWidth
+                ) {
+                    if (ball.color === document.getElementById("target-color").textContent) {
+                        score++;
+                        // Increase the ball speed when the score reaches 10
+                        if (score === 10) {
+                            ballSpeed = 12; // Increase the speed
+                        }
+                        document.getElementById("score").innerText = `Score: ${score}`;
+                        // Remove the caught ball
+                        balls.splice(i, 1);
+                        i--;
+                        if (balls.length === 0) {
+                            // No more balls, reset the instruction
+                            document.getElementById("target-color").textContent = "";
+                        }
+                    } else {
+                        // Decrease the score if a different color ball is caught
+                        if (score > 0) {
+                            score--;
+                            document.getElementById("score").innerText = `Score: ${score}`;
+                        }
+                        balls.splice(i, 1);
+                        i--;
+                    }
+                } else if (ball.y > canvas.height) {
+                    balls.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function drawSpecialBall() {
+            if (specialBallActive) {
+                context.beginPath();
+                context.arc(specialBall.x, specialBall.y, specialBallRadius, 0, Math.PI * 2);
+                context.fillStyle = specialBall.color;
+                context.fill();
+                context.closePath();
+
+                specialBall.y += specialBall.speed;
+
+                // Check if the special ball is caught by the paddle
+                if (
+                    specialBall.y + specialBallRadius > canvas.height - paddleHeight &&
+                    specialBall.x > paddleX &&
+                    specialBall.x < paddleX + paddleWidth
+                ) {
+                    // End the game when the special ball is caught
+                    endGame("Oooopsss! You caught the wrong ball! Game Over");
+                } else if (specialBall.y > canvas.height) {
+                    specialBallActive = false;
+                }
+            }
+        }
+
+        function updateCanvas() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            drawPaddle();
+            drawBalls();
+            drawSpecialBall();
+        }
+
+        function startGame() {
+            setInterval(() => {
+                if (score >= 5 && maxBalls < 5) {
+                    maxBalls++; // Increase the maximum number of balls when score reaches 5
+                }
+                for (let i = 0; i < maxBalls; i++) { // Create a variable number of balls based on maxBalls
+                    createFallingBall(getRandomColor());
+                }
+                // Randomly select the target color
+                document.getElementById("target-color").textContent = getRandomColor();
+
+                // Create a special ball with a chance of 1 in 10
+                if (Math.random() < 0.1) {
+                    createSpecialBall();
+                }
+            }, 3000); // Create balls every 3 seconds
+            setInterval(updateCanvas, 20);
+        }
+
+        // Initialize the instruction with the first target color
+        document.getElementById("target-color").textContent = "";
+        document.getElementById("score").innerText = `Score: ${score}`;
+
+        startGame();
+
+        function endGame(message) {
+            alert(message);
+            restartGame(); // Restart the game after the alert
+        }
+
+        function restartGame() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Reset game variables
+            score = 0;
+            ballSpeed = 8;
+            maxBalls = 3;
+            balls.length = 0;
+
+            // Reset paddle position
+            paddleX = (canvas.width - paddleWidth) / 2;
+
+            // Reset game state
+            specialBallActive = false;
+
+            // Reset the displayed score and instruction
+            document.getElementById("score").innerText = `Score: ${score}`;
+            document.getElementById("target-color").textContent = "";
+
+            // Start the game again
+            startGame();
+        }
+    </script>
+</body>
+
+</html>

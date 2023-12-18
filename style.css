@@ -1,0 +1,120 @@
+h1{
+    font-size: 40px;
+}
+
+.heading {
+    text-align: center;
+}
+
+.schedule {
+    background: #f6f5c7;
+}
+
+.schedule .box-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40rem, 1fr));
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+}
+
+.schedule .box-container .box .content {
+    padding: 2rem;
+}
+
+
+.schedule .box-container .box .content h3 {
+    font-size: 2rem;
+    font-weight: 500;
+    padding-bottom: 0.5rem;
+}
+
+.schedule .box-container .box .content p {
+    color: #333;
+    font-size: 1.5rem;
+    line-height: 1.8;
+}
+
+.schedule .box-container .box .icons {
+    padding: 0 2rem;
+}
+
+.schedule .box-container .box .icons span {
+    display: block;
+    font-size: 1.3rem;
+    color: #333;
+    padding: 0.3rem 0;
+}
+
+.schedule .box-container .box .icons span i {
+    margin-right: 0.5rem;
+}
+
+.schedule .box-container .box .btn {
+    margin: 1.5rem 2rem;
+    background: var(--main-color);
+    color: #fff;
+}
+
+.schedule .box-container .box .btn:hover {
+    background: linear-gradient(120deg, #f1eec8, #8e44ad);
+}
+
+.schedule .box-container .box {
+    background: #fff;
+    overflow: hidden;
+}
+
+.schedule .box-container .box img {
+    object-fit: fill;
+    width: 300px;
+    height: 300px;
+    border-radius: 20%;
+    border: 2px solid #000;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+.size {
+    padding: 5%;
+}
+
+.link-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+}
+
+.link {
+    margin: 0 15px;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #030302;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.link:hover {
+    background-color: #dcb73f;
+}
+
+@media (max-width: 768px) {
+    .link-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .link {
+        margin: 10px 0;
+    }
+}
+
+.heading-1 {
+    padding-top: 20px;
+}

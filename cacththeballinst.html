@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Three Containers Page</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: lavender;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 150px;
+            /* Set the width of the container */
+            height: 150px;
+            /* Set the height of the container */
+            margin: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            background-color: #cd9c9c;
+            cursor: pointer;
+            border-radius: 50%;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease-in-out;
+            position: relative;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .container.small {
+            width: 100px;
+            /* Set the width of the smaller container */
+            height: 100px;
+            /* Set the height of the smaller container */
+            background: lavenderblush;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .container.medium {
+            width: 200px;
+            /* Set the width of the medium container */
+            height: 200px;
+            /* Set the height of the medium container */
+            background: lavenderblush;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .container.large {
+            width: 250px;
+            /* Set the width of the larger container */
+            height: 250px;
+            /* Set the height of the larger container */
+            background: lavenderblush;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .container::before {
+
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background-color: lavender;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .container:hover {
+            background-color: #dd6e9e;
+        }
+    </style>
+
+
+<body>
+    <h2>Catch-The-Match !</h2>
+    <pretty> </pretty>
+
+
+    <a href="L1.html" class="container small">Beginner</a>
+    <a href="L2.html" class="container medium">Intermediate</a>
+    <a href="L3.html" class="container large">Advanced</a>
+</body>
+
+</html>

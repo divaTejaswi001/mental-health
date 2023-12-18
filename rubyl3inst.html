@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Instructions</title>
+
+    <style>
+        body {
+           overflow: hidden;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+
+        }
+
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #FF9F7F, #FFD37F, #9FFF7F, #7FD3FF, #D17FFF);
+            background-size: 800% 800%;
+            animation: gradientAnimation 15s ease infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            100% {
+                background-position: 100% 100%;
+            }
+        }
+
+        .game-container {
+
+            border: 4px solid #000000;
+            border-radius: 10px;
+            padding: 30px;
+            margin-left: 300px;
+            margin-right: 300px;
+            /* Increased padding size to 40px */
+            max-width: 800px;
+            margin-bottom: 100px;
+            margin-top: 50px;
+            position: relative;
+            z-index: 1;
+            text-align: left;
+        }
+
+        #startButton {
+            background-color: transparent;
+            color: white;
+            padding: 10px 20px;
+            font-size: 20px;
+
+            /* Increased font size to 20px */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+
+        h1 {
+
+            color: #8c00ff;
+            font-size: 32px;
+            margin-top: 100px;
+        }
+
+        .startbutton {
+
+            color: #8c00ff;
+            font-size: 32px;
+            margin-top: 100px;
+        }
+
+        p {
+            font-size: 24px;
+            /* Increased font size to 24px */
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        ol {
+            text-align: left;
+            margin-left: 30px;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Moving Toy Elements */
+
+
+        @keyframes moveToy {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-50px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+      
+    </style>
+</head>
+
+<body>
+
+    <div class="background">
+        <h1>
+            <center>
+
+            </center>
+            </font>
+        </h1>
+
+    </div>
+
+    <div class="game-container">
+
+        <p><b>
+                <font size="8" color="red">
+                    <center>Instructions:</center>
+                </font>
+            </b></p>
+        <ul type="square">
+            <font size="6">
+                <li>Use the <font color="red">cursor</font> to click on the instructed colour name</li>
+                <li>Click on the box based on<font color="red"> colour name <br></font>(<font color="red">Note:</font>
+                    Don't
+                    click on the text inside
+                    the box )
+                </li>
+
+                </li>
+                <li>The difficulty level increases with increasing score</li>
+                </ol>
+                <p></p>
+            </font>
+            <center> <button id="startButton"><a href="ruby-L3.html">
+                        <font size="6"> Start
+                            Game</font>
+                    </a></button></center>
+    </div>
+
+</body>
+
+</html>

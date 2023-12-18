@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pop and Shoot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #d7bae1;
+        }
+
+        .bottom-left-image {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            /* Adjust the size of the image as needed */
+            height: 400px;
+
+            animation: floatAnimation 3s infinite;
+            z-index: 2;
+            transition: transform 0.5s ease-in-out;
+            /* Ensures that the image is behind the bubbles */
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .game-container {
+            margin-top: 30px;
+        }
+
+        /* Floating Color Bubbles */
+        .bubble {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            top: 30;
+            cursor: pointer;
+            animation: floatAnimation 3s infinite;
+            z-index: 2;
+            transition: transform 0.5s ease-in-out;
+            /* Higher z-index to display the bubbles on top */
+        }
+
+        .score {
+            position: absolute;
+            top: 10px;
+            /* Adjust the top distance as needed */
+            right: 10px;
+            /* Adjust the right distance as needed */
+            width: 200px;
+            height: 100px;
+            background-color: transparent;
+            color: rgb(0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .targetcolor1 {
+            position: absolute;
+            top: 30px;
+            /* Adjust the top distance as needed */
+            left: 220px;
+            right: 30px;
+            /* Adjust the right distance as needed */
+            width: 400px;
+            height: 100px;
+            background-color: transparent;
+            color: rgb(0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-size: 10px;
+            margin-bottom: 10px;
+        }
+
+        #targetColor {
+            font-weight: bold;
+            font-size: 50px;
+
+        }
+
+        .score {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #message {
+            font-size: 18px;
+            font-weight: bold;
+            color: red;
+            margin-top: 10px;
+        }
+
+        #totalTime {
+            position: absolute;
+            top: 10px;
+            /* Adjust the top distance as needed */
+            left: 10px;
+            right: 30px;
+            /* Adjust the right distance as needed */
+            width: 100px;
+            height: 100px;
+            background-color: transparent;
+            color: rgb(0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* ... (your existing CSS styles) ... */
+
+        @keyframes bubbleBurst {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes floatAnimation {
+            0% {
+                transform: translate(20px, -10px);
+            }
+
+
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="game-container">
+        <div class="targetcolor1">
+            <font size="6">Click on the color: </font>
+        </div>
+        <div id="targetColor"></div>
+        <div class="score">Score: <span id="scoreValue">0</span></div>
+        <div id="message"></div>
+        <div id="totalTime">
+            <font size="6"><span id="timeValue">0</span></font> seconds
+        </div>
+    </div>
+
+    <script>
+        const COLORS = ["red", "blue", "green", "yellow", "orange"];
+
+        const BASE_BUBBLE_GENERATION_TIME = 800; // Initial bubble generation time set to 0.8 seconds
+        const LEVEL_INCREMENT = 10;
+        const COLORS_INCREMENT = 2;
+        const MAX_SAME_COLOR_BUBBLES = 5;
+        const MAX_BUBBLES_ON_SCREEN = 30;
+
+        let score = 0;
+        let level = 1;
+        let targetColor;
+        let bubbleCount = {};
+        let availableColors = COLORS.slice();
+        let isGameOver = false;
+        let isSizeChangeAllowed = false;
+        let bubbleGenerationInterval;
+        let startTime = 0;
+        let totalTime = 0;
+
+        const body = document.body;
+        const targetColorElement = document.getElementById("targetColor");
+        const scoreValue = document.getElementById("scoreValue");
+        const message = document.getElementById("message");
+        const timerValue = document.getElementById("timeValue");
+
+        function startGame() {
+            score = 0;
+            level = 1;
+            availableColors = COLORS.slice();
+            isGameOver = false;
+            isSizeChangeAllowed = false;
+            totalTime = 0;
+            updateScore(0);
+            updateLevel(level);
+            updateTargetColor();
+            createBubbles();
+            startTime = Date.now();
+            setInterval(updateTime, 1000);
+            // Update time every second
+        }
+
+        function updateTargetColor() {
+            targetColor = getRandomColor();
+            targetColorElement.textContent = targetColor;
+        }
+
+        function getRandomColor() {
+            return availableColors[Math.floor(Math.random() * availableColors.length)];
+        }
+
+        function getRandomSize() {
+            return isSizeChangeAllowed ? Math.floor(Math.random() * 50) + 25 : 50; // Random size between 25px and 75px if allowed, else fixed at 50px
+        }
+
+        function createBubble() {
+            const bubble = document.createElement("div");
+            const xPos = Math.random() * (window.innerWidth - 50);
+            const yPos = Math.random() * (window.innerHeight - 50);
+            bubble.style.left = `${xPos}px`;
+            bubble.style.top = `${yPos}px`;
+            const color = getRandomColor();
+            const size = getRandomSize();
+            bubble.style.backgroundColor = color;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.classList.add("bubble");
+            bubble.addEventListener("click", function () {
+                if (bubble.style.backgroundColor === targetColor) {
+                    score++;
+                    scoreValue.textContent = score;
+                    bubbleCount[color]--;
+                    bubble.remove();
+                    updateTargetColor();
+                } else {
+                    bubble.style.backgroundColor = "transparent";
+                    bubble.style.border = "none";
+                    bubble.style.cursor = "default";
+                }
+            });
+            body.appendChild(bubble);
+
+            if (!bubbleCount[color]) bubbleCount[color] = 1;
+            else bubbleCount[color]++;
+
+            if (bubbleCount[color] >= MAX_SAME_COLOR_BUBBLES) {
+                const sameColorBubbles = document.querySelectorAll(`.bubble[style="background-color: ${color};"]`);
+                sameColorBubbles.forEach((sameColorBubble) => {
+                    sameColorBubble.remove();
+                });
+
+            }
+
+            const totalBubbles = document.getElementsByClassName("bubble").length;
+            if (totalBubbles >= MAX_BUBBLES_ON_SCREEN) {
+                endGame();
+            }
+        }
+
+        function createBubbles() {
+            if (isGameOver) return; // Stop generating bubbles if the game is over
+            createBubble();
+            let timeInterval =
+                score > 10 ? Math.max(500, BASE_BUBBLE_GENERATION_TIME - (level - 10) * 50) : BASE_BUBBLE_GENERATION_TIME;
+            timeInterval = score >= 10 ? Math.max(1500, timeInterval) : timeInterval; // Reduced timeInterval to 1 second after score 10
+            clearInterval(bubbleGenerationInterval);
+            bubbleGenerationInterval = setInterval(createBubbles, timeInterval);
+
+            // Allow size change after reaching score 20
+            if (score >= 20) {
+                isSizeChangeAllowed = true;
+            }
+        }
+        function getRandomSize() {
+            const baseSize = 50; // Base bubble size
+            const maxSize = 35; // Maximum bubble size
+            const sizeIncreaseInterval = 20; // Interval at which bubble size increases
+            const sizeIncrement = 5; // Amount to increment bubble size
+
+            const size = isSizeChangeAllowed ? baseSize + (Math.floor(score / sizeIncreaseInterval) * sizeIncrement) : baseSize;
+            return Math.min(size, maxSize); // Limit the size to the maximum
+        }
+
+
+        function updateScore(value) {
+            score += value;
+            scoreValue.textContent = score;
+        }
+
+        function updateLevel(value) {
+            level = value;
+            if (level % LEVEL_INCREMENT === 0) {
+                const newColors = COLORS.slice(-COLORS_INCREMENT);
+                availableColors = availableColors.concat(newColors);
+            }
+        }
+
+        function updateTime() {
+            if (!isGameOver) {
+                const currentTime = Date.now();
+                totalTime = Math.floor((currentTime - startTime) / 1000); // Calculate total time in seconds
+                timerValue.textContent = totalTime;
+            }
+        }
+
+        function endGame() {
+
+            isGameOver = true;
+            clearInterval(bubbleGenerationInterval);
+            clearInterval(updateTime); // Stop updating the time
+            setTimeout(function () {
+                alert("Game Over! Your final score is: " + score + "\nTotal Time: " + totalTime + " seconds");
+                removeAllBubbles();
+                startGame();
+            }, 2000); // Delay the game restart by 1 second after showing the alert
+        }
+
+        function removeAllBubbles() {
+            const bubbles = document.querySelectorAll(".bubble");
+            bubbles.forEach((bubble) => {
+                bubble.remove();
+            });
+        }
+
+        startGame();
+    </script>
+</body>
+
+</html>

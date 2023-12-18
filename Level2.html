@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Catch the Ball Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            background: linear-gradient(135deg, #e190d0d6, #65ceda, #fbfffd);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        #game-container {
+            position: relative;
+            width: 1400px;
+            height: 99vh;
+            /* Set the height of the container */
+            border: 2px solid #000;
+            /* Add a border for visualization */
+            overflow: hidden;
+            /* Hide the overflow of the container */
+
+            background: linear-gradient(135deg, #e190d0d6, #65ceda, #fbfffd);
+
+
+        }
+
+        .ball {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            position: absolute;
+            animation: bounce 2s infinite;
+            background: radial-gradient(circle, #00a6ff, #ff7f50, #df6886);
+            background-size: 600% 600%;
+            animation: gradientChange 2s infinite;
+        }
+
+        .paddle {
+            position: absolute;
+            width: 100px;
+            height: 20px;
+            background-color: #020202;
+            bottom: 20px;
+            cursor: none;
+            border-radius: 10px;
+        }
+
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            font-size: 24px;
+            color: #333;
+            padding: 8px 14px;
+            border-radius: 25px;
+
+            background-color: transparent;
+
+        }
+
+        #timer {
+            position: absolute;
+            top: 20px;
+            right: 80px;
+            font-size: 24px;
+            color: #333;
+            padding: 8px 14px;
+            border-radius: 25px;
+
+            background-color: transparent;
+
+        }
+
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: bold;
+            color: #f00a0a;
+            display: none;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #instruction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #0e0e0e;
+            padding: 12px 20px;
+            border-radius: 25px;
+            background: transparent;
+            box-shadow: 2px 2px 4px rgb(22, 22, 22);
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div id="game-container">
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="paddle"></div>
+    </div>
+
+    <div id="score">Score: 0</div>
+    <div id="timer">Time: 60</div>
+    <div id="game-over">Game Over</div>
+    <div id="instruction">Catch </div>
+
+    <script>
+        const balls = document.querySelectorAll('.ball');
+        const paddle = document.querySelector('.paddle');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const gameOverDisplay = document.getElementById('game-over');
+        const instructionDisplay = document.getElementById('instruction');
+        let instructionTimeout;
+
+        let score = 0;
+        let ballSpeedX = [8, -7, 7, -6, -7];
+        let ballSpeedY = [8, -7, -7, 6, 8];
+        let isGameOver = false;
+        let remainingTime = 60;
+        let timerInterval;
+        let ballCollisionOccurred = false;
+
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        function setRandomPosition(ball) {
+            const x = Math.random() * (windowWidth - 30);
+            const y = Math.random() * (windowHeight - 30);
+            ball.style.left = `${x}px`;
+            ball.style.top = `${y}px`;
+        }
+
+        // Function to set random instructions
+        function setRandomInstruction() {
+            const instructions = ['Catch', 'Don\'t Catch'];
+            const randomIndex = Math.floor(Math.random() * instructions.length);
+            instructionDisplay.textContent = instructions[randomIndex];
+
+            // Set instruction timeout to change the instruction after 2 seconds
+            instructionTimeout = setTimeout(setRandomInstruction, 4000);
+        }
+
+        function updateBallPosition() {
+            if (!isGameOver) {
+                ballCollisionOccurred = false; // Reset the collision flag
+
+                balls.forEach((ball, index) => {
+                    let currentX = parseInt(ball.style.left);
+                    let currentY = parseInt(ball.style.top);
+
+                    // Move the ball in its current direction
+                    currentX += ballSpeedX[index];
+                    currentY += ballSpeedY[index];
+
+                    // Check for collisions with the window edges
+                    if (currentX <= 0 || currentX >= windowWidth - 30) {
+                        ballSpeedX[index] = -ballSpeedX[index]; // Reverse X direction
+                    }
+
+                    if (currentY <= 0 || currentY >= windowHeight - 30) {
+                        ballSpeedY[index] = -ballSpeedY[index]; // Reverse Y direction
+                    }
+
+                    ball.style.left = `${currentX}px`;
+                    ball.style.top = `${currentY}px`;
+
+                    // Check if the instruction matches the player's action
+                    const currentInstruction = instructionDisplay.textContent;
+                    const isInstructionToCatch = currentInstruction === 'Catch';
+
+                    // Check for collision with the paddle
+                    if (
+                        currentX + 30 >= parseInt(paddle.style.left) &&
+                        currentX <= parseInt(paddle.style.left) + 100 &&
+                        currentY + 30 >= windowHeight - 40 &&
+                        !ballCollisionOccurred
+                    ) {
+                        // Check if the player catches the ball when instructed to catch
+                        if (isInstructionToCatch) {
+                            ballSpeedY[index] = -ballSpeedY[index]; // Reverse Y direction
+                            score++;
+                            scoreDisplay.textContent = 'Score: ' + score;
+                            setRandomPosition(ball); // Reset the ball to a new random position
+                        } else {
+                            // If the player catches the ball when instructed not to catch, decrement the score
+                            if (score > 0) {
+                                score--;
+                                scoreDisplay.textContent = 'Score: ' + score;
+                            }
+                        }
+
+                        ballCollisionOccurred = true; // Set collision flag to true
+                    }
+                });
+
+                requestAnimationFrame(updateBallPosition);
+            }
+        }
+
+        function updateTime() {
+            remainingTime--;
+            timerDisplay.textContent = 'Time: ' + remainingTime;
+
+            if (remainingTime <= 0 || isGameOver) {
+                clearInterval(timerInterval); // Stop the timer
+                endGame();
+            }
+        }
+
+        function endGame() {
+            isGameOver = true;
+            balls.forEach(ball => ball.remove());
+            paddle.remove();
+            instructionDisplay.style.display = 'none';
+            gameOverDisplay.style.display = 'block';
+        }
+
+        function movePaddle(event) {
+            const x = event.clientX - 50; // Half of paddle width
+            paddle.style.left = `${x}px`;
+        }
+
+        // Event listener for mousemove to control the paddle
+        document.addEventListener('mousemove', movePaddle);
+
+        // Start the game and instruction timer
+        setRandomInstruction();
+        setRandomPosition(balls[0]);
+        setRandomPosition(balls[1]);
+        setRandomPosition(balls[2]);
+        setRandomPosition(balls[3]);
+        setRandomPosition(balls[4]);
+        updateBallPosition();
+        timerInterval = setInterval(updateTime, 1000);
+
+    </script>
+</body>
+
+</html>
